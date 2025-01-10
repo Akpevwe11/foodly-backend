@@ -67,7 +67,7 @@ module.exports = {
     getRestaurant: async (req, res) =>  {
 
 
-        const restaurantId = req.params 
+        const restaurantId = req.params.id
 
         try {
             const restaurant = await Restaurant.findById(restaurantId)

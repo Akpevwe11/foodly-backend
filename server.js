@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
+const restaurantRouter = require('./routes/restaurant');
 
 
 
@@ -28,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/restaurants/', restaurantRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
