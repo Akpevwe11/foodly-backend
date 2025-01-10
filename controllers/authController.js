@@ -87,7 +87,7 @@ module.exports = {
                 email: user.email,
             }, process.env.JWT_SECRET, { expiresIn: '21d' });
 
-            return res.status(200).json({ userToken });
+            return res.status(200).json({ userToken, userType: user.userType, email: user.email, id: user._id });
         } catch (error) {
             console.error('Error logging in user:', error);
             return res.status(500).json("Internal Server Error");

@@ -6,7 +6,8 @@ const app = express();
 
 const port = process.env.PORT || 3000;
 
-const authRouter = require('./routes/auth'); 
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/user');
 
 
 
@@ -26,6 +27,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => console.log('Db connected')).
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', authRouter);
+app.use('/api/users', userRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
