@@ -12,7 +12,7 @@ const restaurantSchema = new mongoose.Schema({
     owner: {type: String, required: true}, 
     isAvailable: {type: Boolean, required: false, default: true},
     code: {type: String, required: true, unique: true},
-    profile: {
+    logoUrl: {
         type: String,
         required: true,
         default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
@@ -23,8 +23,8 @@ const restaurantSchema = new mongoose.Schema({
         id: {type: String, required: true},
         latitude: {type: Number, required: true},
         longitude: {type: Number, required: true},
-        latitudeDelta: {type: Number, required: true},
-        longitudeDelta: {type: Number, required: true},
+        latitudeDelta: {type: Number, required: true, default: 0.0922},
+        longitudeDelta: {type: Number, required: true, default: 0.0421},
         address: {type: String, required: true},
         title: {
             type: String, required: true 

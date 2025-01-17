@@ -10,7 +10,7 @@ module.exports = {
             res.status(201).json({status: true, message: "Restaurant successfully created"})
         } catch (error) {
 
-            res.status(500).json({status: false, message:"Error creating restaurant"})
+            res.status(500).json({status: false, message:"Error creating restaurant", error: error.message})
 
         }
 
@@ -18,13 +18,13 @@ module.exports = {
 
     serviceAvailability: async (req, res) => {
 
-        const restaurantId = req.params; 
+        const restaurantId = req.params.id; 
 
         try {
             const restaurant = await Restaurant.findById(restaurantId);
 
             if (!restaurant) {
-                return res.status(403).json({status: false, message: "Restaurant not found"})
+                return res.status(404).json({status: false, message: "Restaurant not found"})
             }
 
             restaurant.isAvailable = !restaurant.isAvailable 
@@ -46,19 +46,21 @@ module.exports = {
         const restaurantId = req.params; 
 
         try {
+
             const restaurant = await Restaurant.findById(restaurantId)
 
             if (!restaurant) {
-                return res.status(403).json({status: false, message: "Restaurant not found"})
+                return res.status(404).json({status: false, message: "Restaurant not found"})
             }
 
             await Restaurant.findByIdAndDelete(restaurantId)
 
-            res.status(200).json({status: true, message: "Restaurant successfully deleted"})
+            res.status(200).json({status: true, message: "Restaurant successfully deleted" })
 
         } catch (error) {
 
             res.status(500).json({status: false, message: "Error deleting restaurant"})
+
         }
 
 
