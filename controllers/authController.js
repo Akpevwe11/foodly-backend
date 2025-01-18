@@ -3,69 +3,54 @@ const CryptoJs = require('crypto-js');
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
 const {v4: uuidv4 } = require('uuid');
+const { registerSchema } = require('../validations/authValidation.js');
 
 module.exports = {
-    createUser: async (req, res) =>  {
 
+    createUser: async (req, res) => {
 
-        const user = req.body; 
+        // information stored on the request body
 
-        // Validate user and userResponse 
-       
+        const { error } = registerSchema.validate(req.body);
+
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const {username, email, password, phone, address, userType} = req.body;
+
+        const hash = await bcrypt.hash(password, 10);
+
 
         try {
 
-            await admin.auth().getUserByEmail(user.email);
+            const newUser = new User({
+                username,
+                uid: uuidv4(),
+                email,
+                password: hash,
+                phone,
+                address,
+                userType
+            });
 
-            res.status(400).json({status: false, message: "Email already exist"})
+            // save the user to the database
+
+            await newUser.save();
+
+            // return a success message
+
+            return res.status(201).json({message: 'User created successfully'});
+
 
         } catch (error) {
-
-            if (error.code === 'auth/user-not-found'){
-                try {
-
-                    const firebaseUser = await admin.auth().createUser({
-                        email: user.email, 
-                        password: user.password,
-                        emailVerified: false, 
-                        disabled: false
-                    })
-
-                    console.log(firebaseUser.uid);
-
-                    // Extract uid from the firebaseUser response
-                    const uid = firebaseUser.uid; 
-
-                    if (!uid) {
-                        return res.status(400).json({error:"invalid uid"})
-                    }
-
-
-
-                
-                     const newUser = new User({
-                       username: user.username, 
-                        email: user.email, 
-                        password: CryptoJs.AES.encrypt(user.password, process.env.SECRET).toString(),
-                        uid: firebaseUser.uid, 
-                         userType: 'Client'
-                     });
-                    await newUser.save()
-
-                    
-                
-                    res.status(201).json({status: true, message: 'User created successfully'})
-        
-                } catch (error) {
-                    console.error('Error creating user:', error);
-                    res.status(500).json({status: false, error: "Error creating user"})
-
-                }
-            }
-
+            console.log('Error creating user', error);
+            return res.status(500).json({message: 'Error creating user'});
         }
 
+
     },
+   
 
     loginUser: async (req, res) => {
         try {

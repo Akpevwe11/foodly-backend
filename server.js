@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => console.log('Db connected')).
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/restaurants/', restaurantRouter)
 
